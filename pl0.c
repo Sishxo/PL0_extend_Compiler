@@ -125,7 +125,7 @@ void getsym()
 					;
 					num = num + (ch - '0') * t;
 					k++;
-					getch()
+					getch();
 				}
 				sym = realsym; //实数类型
 			}
@@ -442,7 +442,101 @@ void typeexpression(){
 		getsym();
 	}
 	else if(sym==arraysym){
-
+		//sym1=sym;
+		getsym();
+		if(sym==lmparen){
+			getsym();
+			if(sym==intersym){
+				num3=num;//给数组的前边界赋值
+				getsym();
+				if(sym==dotdot){
+					getsym();
+					if(sym==intersym){
+						num4=num;
+						if(num4<num3){
+							error(35);
+						}
+						size=num4-num3+1;
+						enter(type);
+						table[tx].low[drtnum]=num3;//数组第一维的上下界
+						table[tx].high[drtnum]=num4;
+						table[tx].drt++;
+						getsym();
+						if(sym!=rmparen){
+							error(34);
+						}
+						getsym();
+						if(sym==ofsym){
+							getsym();
+							if(sym==intersym||sym==realsym||sym==Boolsym){
+								table[tx].type2=sym;
+								table[tx].drt=1;
+								table[tx].size=size;//不懂为什么，只声明了数组属性，没有给他开辟空间
+							}
+							else{
+								while(sym==arraysym){
+									table[tx].drt++;
+									drtnum++;
+									getsym();
+									if(sym==lmparen){
+										getsym();
+										if(sym!=intersym){
+											error(34);
+										}
+										table[tx].low[drtnum]=num;
+										getsym();
+										if(sym!=dotdot){
+											error(34);
+										}
+										getsym();
+										if(sym!=intersym){
+											error(34);
+										}
+										if(num<table[tx].low[drtnum]){
+											error(35);
+										}
+										table[tx].high[drtnum]=num;
+										getsym();
+										if(sym!=rmparen){
+											error(34);
+										}
+										getsym();
+										if(sym!=ofsym){
+											error(34);
+										}
+										getsym();
+										size=size*(table[tx].high[drtnum]-table[tx].low[drtnum]+1);
+									}
+									else{
+										error(34);
+									}
+									table[tx].size=size;
+								}
+								if(sym==intersym||sym==realsym||sym==Boolsym){
+									table[tx].type2=sym;
+								}
+							}
+							//getsym();垃圾代码！！
+						}
+						else{
+							error(34);
+						}
+					}
+					else{
+						error(34);
+					}
+				}
+				else{
+					error(34);
+				}
+			}
+			else{
+				error(34);
+			}
+		}
+		else{
+			error(34);
+		}
 	}
 	else{
 		error(33);
@@ -812,6 +906,7 @@ void block(unsigned long fsys)
 			getsym();
 			do{
 				typedeclaration();
+				
 			}while(sym==ident);
 		}
 		if (sym == varsym)
@@ -1007,8 +1102,7 @@ void interpret()
 	printf("end PL/0\n");
 }
 
-int main()
-{
+void init(){
 	long i;
 	for (i = 0; i < 256; i++)
 	{
@@ -1102,7 +1196,11 @@ int main()
 	declbegsys = constsym | varsym | procsym | funcsym | typesym;
 	statbegsys = beginsym | callsym | ifsym | whilesym | exitsym | writesym | readsym;
 	facbegsys = ident | intersym | realsym | lparen | NOT | truesym | falsesym;
+}
 
+int main()
+{
+	init();
 	printf("please input source program file name: ");
 	scanf("%s", infilename);
 	printf("\n");
