@@ -374,7 +374,7 @@ long position(char *id)
 	{
 		i = i - 1;
 	}
-	return i;
+	return i;//若返回0，意味着未找到相同名称的变量，否则有
 }
 
 void constdeclaration()
@@ -389,7 +389,7 @@ void constdeclaration()
 				error(1);
 			}
 			getsym();
-			if (sym == intersym||sym==realsym)//const允许定义为整数或实数
+			if (sym == intersym || sym == realsym) //const允许定义为整数或实数
 			{
 				enter(constant);
 				getsym();
@@ -410,145 +410,251 @@ void constdeclaration()
 	}
 }
 
-void typedeclaration(){
-	char id1[al+1];
-	if(sym==ident){
-		strcpy(id1,id);
+void typedeclaration()
+{
+	char id1[al + 1];
+	if (sym == ident)
+	{
+		strcpy(id1, id);
 		getsym();
-		if(sym==eql||sym==becomes){
-			if(sym==becomes){
+		if (sym == eql || sym == becomes)
+		{
+			if (sym == becomes)
+			{
 				error(1);
 			}
 			getsym();
-			strcpy(id,id1);
+			strcpy(id, id1);
 			typeexpression();
 		}
-		else{
+		else
+		{
 			error(3);
 		}
-	}else{
+	}
+	else
+	{
 		error(4);
 	}
 }
 
-void typeexpression(){
+void typeexpression()
+{
 	__int64 sym1;
-	long num3,num4,size;//数组上下界，大小
+	long num3, num4, size; //数组上下界，大小
 	long tx1;
-	int drtnum=1;//数组维数
+	int drtnum = 1; //数组维数
 	int j;
-	if(sym==intersym||sym==realsym||sym==Boolsym){
+	if (sym == intersym || sym == realsym || sym == Boolsym)
+	{
 		enter(type);
 		getsym();
 	}
-	else if(sym==arraysym){
+	else if (sym == arraysym)
+	{
 		//sym1=sym;
 		getsym();
-		if(sym==lmparen){
+		if (sym == lmparen)
+		{
 			getsym();
-			if(sym==intersym){
-				num3=num;//给数组的前边界赋值
+			if (sym == intersym)
+			{
+				num3 = num; //给数组的前边界赋值
 				getsym();
-				if(sym==dotdot){
+				if (sym == dotdot)
+				{
 					getsym();
-					if(sym==intersym){
-						num4=num;
-						if(num4<num3){
+					if (sym == intersym)
+					{
+						num4 = num;
+						if (num4 < num3)
+						{
 							error(35);
 						}
-						size=num4-num3+1;
+						size = num4 - num3 + 1;
 						enter(type);
-						table[tx].low[drtnum]=num3;//数组第一维的上下界
-						table[tx].high[drtnum]=num4;
+						table[tx].low[drtnum] = num3; //数组第一维的上下界
+						table[tx].high[drtnum] = num4;
 						table[tx].drt++;
 						getsym();
-						if(sym!=rmparen){
+						if (sym != rmparen)
+						{
 							error(34);
 						}
 						getsym();
-						if(sym==ofsym){
+						if (sym == ofsym)
+						{
 							getsym();
-							if(sym==intersym||sym==realsym||sym==Boolsym){
-								table[tx].type2=sym;
-								table[tx].drt=1;
-								table[tx].size=size;//不懂为什么，只声明了数组属性，没有给他开辟空间
+							if (sym == intersym || sym == realsym || sym == Boolsym)
+							{
+								table[tx].type2 = sym;
+								table[tx].drt = 1;
+								table[tx].size = size; //不懂为什么，只声明了数组属性，没有给他开辟空间
 							}
-							else{
-								while(sym==arraysym){
+							else
+							{
+								while (sym == arraysym)
+								{
 									table[tx].drt++;
 									drtnum++;
 									getsym();
-									if(sym==lmparen){
+									if (sym == lmparen)
+									{
 										getsym();
-										if(sym!=intersym){
+										if (sym != intersym)
+										{
 											error(34);
 										}
-										table[tx].low[drtnum]=num;
+										table[tx].low[drtnum] = num;
 										getsym();
-										if(sym!=dotdot){
+										if (sym != dotdot)
+										{
 											error(34);
 										}
 										getsym();
-										if(sym!=intersym){
+										if (sym != intersym)
+										{
 											error(34);
 										}
-										if(num<table[tx].low[drtnum]){
+										if (num < table[tx].low[drtnum])
+										{
 											error(35);
 										}
-										table[tx].high[drtnum]=num;
+										table[tx].high[drtnum] = num;
 										getsym();
-										if(sym!=rmparen){
+										if (sym != rmparen)
+										{
 											error(34);
 										}
 										getsym();
-										if(sym!=ofsym){
+										if (sym != ofsym)
+										{
 											error(34);
 										}
 										getsym();
-										size=size*(table[tx].high[drtnum]-table[tx].low[drtnum]+1);
+										size = size * (table[tx].high[drtnum] - table[tx].low[drtnum] + 1);
 									}
-									else{
+									else
+									{
 										error(34);
 									}
-									table[tx].size=size;
+									table[tx].size = size;
 								}
-								if(sym==intersym||sym==realsym||sym==Boolsym){
-									table[tx].type2=sym;
+								if (sym == intersym || sym == realsym || sym == Boolsym)
+								{
+									table[tx].type2 = sym;
 								}
 							}
 							//getsym();垃圾代码！！
 						}
-						else{
+						else
+						{
 							error(34);
 						}
 					}
-					else{
+					else
+					{
 						error(34);
 					}
 				}
-				else{
+				else
+				{
 					error(34);
 				}
 			}
-			else{
+			else
+			{
 				error(34);
 			}
 		}
-		else{
+		else
+		{
 			error(34);
 		}
 	}
-	else{
+	else
+	{
 		error(33);
 	}
 }
 
 void vardeclaration()
 {
+	long i;//用于存储在符号表中搜索得到的index
+	int identnum=0;//同类型的变量个数
+	char sameid[10][al+1];//存放变量名
+	long size;
 	if (sym == ident)
 	{
-		enter(variable);
+		strcpy(sameid[identnum],id);
+		identnum++;
 		getsym();
+		while(sym==comma){
+			getsym();
+			if(sym==ident){
+				for(int j=0;j<identnum;j++){
+					if(strcmp(sameid[j],id)==0){
+						error(48);
+						break;
+					}
+				}
+				strcpy(sameid[identnum],id);
+				identnum++;
+				getsym();
+			}
+		}
+		if(sym==nul){//遇到了:,对声明的变量进行类型定义
+			getsym();
+			if(sym==intersym||sym==realsym||sym==Boolsym){
+				for(int j=0;j<identnum;j++){
+					strcpy(id,sameid[j]);
+					i=position(id);
+					if(i!=0){//意味着已存在该变量
+						error(48);
+					}
+					enter(variable);
+					table[tx].type1=sym;
+				}
+			}
+			else if(sym==ident){
+				i=position(id);
+				if(i==0){
+					error(11);//不存在用于定义类型的类型变量
+				}
+				sym=table[i].type1;
+				if(sym==intersym||sym==realsym||sym==Boolsym){
+					for(int j=0;j<identnum;j++){
+						strcpy(id,sameid[k]);
+						enter(variable);
+						table[tx].type1=sym;
+					}
+				}
+				else if(sym==arraysym){
+					for(int j=0;j<identnum;;j++){
+						strcpy(id,sameid[j]);
+						enter(variable);
+						table[tx].type1=arraysym;
+						table[tx].size=table[i].size;
+						size=table[tx].size;
+						table[tx].drt=table[i].drt;
+						for(int t=1;t<=table[tx].drt;t++){
+							table[tx].low[t]=table[i].low[t];
+							table[tx].high[t]=table[i].high[t];
+						}
+						sym=table[i].type2;
+						table[tx].type2=sym;
+						dx=dx+2*table[i].drt+1;//每一维都需要2+1个空间的控制信息
+						dx+=size;
+					}
+				}
+			}
+			else{
+				error(36);
+			}
+		}
+		else{
+			error(55);
+		}
 	}
 	else
 	{
@@ -868,8 +974,8 @@ void block(unsigned long fsys)
 		strcpy(table[tx].name, pnow[j].id);
 		table[tx].kind = variable;
 		table[tx].level = lev;
-		table[tx].size=1;
-		table[tx].drt=0;
+		table[tx].size = 1;
+		table[tx].drt = 0;
 		table[tx].addr = dx;
 		table[tx].type1 = pnow[j].sym;
 		dx++;
@@ -886,13 +992,13 @@ void block(unsigned long fsys)
 			getsym();
 			do
 			{
-				constdeclaration();//ident=number
-				while (sym == comma)//声明第二个变量
+				constdeclaration();	 //ident=number
+				while (sym == comma) //声明第二个变量
 				{
 					getsym();
 					constdeclaration();
 				}
-				if (sym == semicolon)//const语句结束
+				if (sym == semicolon) //const语句结束
 				{
 					getsym();
 				}
@@ -902,12 +1008,22 @@ void block(unsigned long fsys)
 				}
 			} while (sym == ident);
 		}
-		if(sym==typesym){//类型声明，占位
+		if (sym == typesym)
+		{ //类型声明，占位
 			getsym();
-			do{
+			do
+			{
 				typedeclaration();
-				
-			}while(sym==ident);
+				getsym();
+				if (sym == semicolon)
+				{
+					getsym();
+				}
+				else
+				{
+					error(33);
+				}
+			} while (sym == ident);
 		}
 		if (sym == varsym)
 		{
@@ -915,11 +1031,7 @@ void block(unsigned long fsys)
 			do
 			{
 				vardeclaration();
-				while (sym == comma)
-				{
-					getsym();
-					vardeclaration();
-				}
+				getsym();
 				if (sym == semicolon)
 				{
 					getsym();
@@ -1102,7 +1214,8 @@ void interpret()
 	printf("end PL/0\n");
 }
 
-void init(){
+void init()
+{
 	long i;
 	for (i = 0; i < 256; i++)
 	{
