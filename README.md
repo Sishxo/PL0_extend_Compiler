@@ -2,7 +2,7 @@
 This is a course project based on PL0 compiler.
 
 Sun Shichu<br>
-Zhao Jun<br>
+Zhao Jun-just<br>
 Li Wenqian<br>
 Li Ying<br>
 Xue Ruxiang<br>
