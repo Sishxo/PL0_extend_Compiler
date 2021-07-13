@@ -1042,41 +1042,83 @@ void block(unsigned long fsys)
 				}
 			} while (sym == ident);
 		}
-		while (sym == procsym)
+		while (sym == procsym||funcsym)
 		{
-			getsym();
-			if (sym == ident)
-			{
-				enter(proc);
+			prodn=0;
+			if(sym==procsym){
 				getsym();
+				if(sym==ident){
+					enter(proc);
+					getsym();
+				}
+				else{
+					error(4);
+				}
+				if(sym==semicolon){
+					getsym();
+				}
+				else if(sym==lparen){
+					getsym();
+					while(sym==ident){
+						strcpy(pnow[prodn].id,id);
+						prodn++;
+						if(ch==':'){
+							getch();
+							getsym();
+						}
+						else{
+							error(38);
+						}
+						if(sym==intersym||sym==realsym||sym==Boolsym){
+							pnow[prodn-1].sym=sym;
+							getsym();
+						}
+						else{
+							error(39);
+						}
+						if(sym==semicolon||sym==rparen){
+							getsym();
+						}
+						else{
+							error(5);
+						}
+					}
+					if(sym==semicolon){
+						getsym();
+					}
+				}
+				else{
+					error(5);
+				}
 			}
-			else
-			{
-				error(4);
-			}
-			if (sym == semicolon)
-			{
+			else if(sym==funcsym){
+				k=0;
 				getsym();
-			}
-			else
-			{
-				error(5);
-			}
-			lev = lev + 1;
-			tx1 = tx;
-			dx1 = dx;
-			block(fsys | semicolon);
-			lev = lev - 1;
-			tx = tx1;
-			dx = dx1;
-			if (sym == semicolon)
-			{
-				getsym();
-				test(statbegsys | ident | procsym, fsys, 6);
-			}
-			else
-			{
-				error(5);
+				if(sym==ident){
+					enter(func);
+					getsym();
+					i=position(id);
+				}
+				else{
+					error(4);
+				}
+				if(sym==lparen){
+					getsym();
+					while(sym==ident){
+						strcpy(pnow[prodn].id,id);
+						prodn++;
+						if(ch==':'){
+							getch();
+							getsym();
+						}
+						else{
+							error(38);
+						}
+						if(sym==intersym||sym==realsym||sym==Boolsym){
+							table[i].paral
+						}
+					}
+				}
 			}
 		}
 		test(statbegsys | ident, declbegsys, 7);
@@ -1107,7 +1149,7 @@ long base(long b, long l)
 void interpret()
 {
 	long p, b, t;  // program-, base-, topstack-registers
-	instruction i; // instruction register
+	instruction p; // instruction register
 
 	printf("start PL/0\n");
 	t = 0;

@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"name": "c_base",
+			"path": "..\\..\\..\\..\\..\\..\\Download\\026315-01\\课件1源码\\lab_pl0\\c_base"
+		},
+		{
+			"name": "PB08210256_1",
+			"path": "..\\..\\..\\PB08210256_1"
+		},
+		{
+			"name": "PL0_extend_Compiler",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.tcc": "cpp",
+			"random": "cpp",
+			"stdlib.h": "c",
+			"cctype": "c"
+		}
+	}
+}
