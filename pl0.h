@@ -89,6 +89,7 @@ typedef struct{
     jmp 0, a : jump to a
     jpc 0, a : jump conditional to a       */
 
+int errornum=0; 
 char ch;               // last character read
 __int64 sym;     // last symbol read 最后一个词的类型
 __int64 lastsym;   //最后取得的词法类型
