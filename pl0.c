@@ -1100,7 +1100,7 @@ void expre(__int64 fsys)
 		else
 		{
 			lastsym = typeerror;
-			error(30);
+			error(48);
 		}
 		gen(opr, 0, 6);
 	}
@@ -1137,7 +1137,7 @@ void expre(__int64 fsys)
 		else
 		{
 			lastsym = typeerror;
-			error(50);
+			error(49);
 		}
 		switch (relop)
 		{
@@ -1185,7 +1185,7 @@ void statement(__int64 fsys)
 					expre(fsys | rmparen);
 					if (lastsym != intersym)
 					{
-						error(30);
+						error(50);
 					}
 					lasttype = lastsym;
 					if (sym == rmparen)
@@ -1195,7 +1195,7 @@ void statement(__int64 fsys)
 				}
 				else
 				{
-					error(46);
+					error(51);
 				}
 			}
 			lasttype = table[i].type2;
@@ -1237,7 +1237,7 @@ void statement(__int64 fsys)
 		else
 		{
 			lastsym = typeerror;
-			error(51);
+			error(52);
 		}
 		if (i != 0)
 		{
@@ -1255,7 +1255,7 @@ void statement(__int64 fsys)
 				gen(sto, lev - table[i].level, table[i].funcaddr);
 				break;
 			case type:
-				error(56);
+				error(53);
 				break;
 			}
 		}
@@ -1266,14 +1266,14 @@ void statement(__int64 fsys)
 		getsym();
 		if (sym != ident)
 		{
-			error(14);
+			error(54);
 		}
 		else
 		{
 			i = position(id);
 			if (i == 0)
 			{
-				error(11);
+				error(55);
 			}
 			else
 			{
@@ -1294,7 +1294,7 @@ void statement(__int64 fsys)
 						}
 						else
 						{
-							error(40);
+							error(56);
 						}
 						if (k != table[i].n)
 						{
@@ -1317,7 +1317,7 @@ void statement(__int64 fsys)
 				}
 				else
 				{
-					error(15);
+					error(57);
 				}
 			}
 		}
@@ -1329,7 +1329,7 @@ void statement(__int64 fsys)
 		if (lastsym != Boolsym)
 		{
 			lastsym = typeerror;
-			error(52);
+			error(58);
 		}
 		if (sym == thensym)
 		{
@@ -1337,7 +1337,7 @@ void statement(__int64 fsys)
 		}
 		else
 		{
-			error(16);
+			error(59);
 		}
 		cx1 = cx;
 		gen(jpc, 0, 0);
@@ -1382,7 +1382,7 @@ void statement(__int64 fsys)
 			}
 			else
 			{
-				error(10);
+				error(60);
 			}
 			statement(fsys | semicolon | endsym);
 		}
@@ -1392,7 +1392,7 @@ void statement(__int64 fsys)
 		}
 		else
 		{
-			error(17);
+			error(61);
 		}
 	}
 	else if (sym == whilesym)
@@ -1404,7 +1404,7 @@ void statement(__int64 fsys)
 		if (lastsym != Boolsym)
 		{
 			lastsym = typeerror;
-			error(52);
+			error(62);
 		}
 		cx2 = cx;
 		gen(jpc, 0, 0);
@@ -1414,7 +1414,7 @@ void statement(__int64 fsys)
 		}
 		else
 		{
-			error(18);
+			error(63);
 		}
 		statement(fsys);
 		gen(jmp, 0, cx1);
@@ -1430,7 +1430,7 @@ void statement(__int64 fsys)
 	{
 		if (whilenum == 0)
 		{
-			error(47);
+			error(64);
 		}
 		else
 		{
@@ -1445,7 +1445,7 @@ void statement(__int64 fsys)
 		getsym();
 		if (sym != lparen)
 		{
-			error(35);
+			error(65);
 		}
 		else
 		{
@@ -1457,10 +1457,10 @@ void statement(__int64 fsys)
 				else
 					i = 0;
 				if (i == 0)
-					error(36);
+					error(66);
 				else if (table[i].kind == constant || table[i].kind == proc || table[i].type1 == Boolsym)
 				{ // 不能往常量或过程以及布尔类型读入数据
-					error(12);
+					error(67);
 					i = 0;
 					getsym();
 					continue;
@@ -1489,7 +1489,7 @@ void statement(__int64 fsys)
 									if (lastsym != intersym)
 									{
 										lastsym = typeerror;
-										error(46);
+										error(69);
 									}
 									if (sym == rmparen)
 									{
@@ -1498,14 +1498,14 @@ void statement(__int64 fsys)
 								}
 								else
 								{
-									error(46);
+									error(70);
 								}
 							}
 							gen(opr, 0, 14);
 							arraydo(sto, i);
 						}
 						else
-							error(39);
+							error(71);
 					}
 				}
 			} while (sym == comma);
@@ -1526,7 +1526,7 @@ void statement(__int64 fsys)
 				if (lastsym != intersym && lastsym != realsym && lastsym != constsym)
 				{
 					lastsym = typeerror;
-					error(53);
+					error(72);
 				}
 				if (lastsym == intersym)
 				{					 //输出整型
@@ -1539,14 +1539,14 @@ void statement(__int64 fsys)
 			} while (sym == comma);
 			if (sym != rparen)
 			{
-				error(35);
+				error(73);
 			}
 			else
 				getsym();
 			gen(opr, 0, 17); //输出换行符
 		}
 		else
-			error(35);
+			error(74);
 	}
 	test(fsys, 0, 19);
 }
@@ -1588,7 +1588,7 @@ void block(__int64 fsys)
 	}*/
 	if (lev > levmax)
 	{
-		error(32);
+		error(75);
 	}
 	do
 	{
@@ -1609,7 +1609,7 @@ void block(__int64 fsys)
 				}
 				else
 				{
-					error(5);
+					error(76);
 				}
 			} while (sym == ident);
 		}
@@ -1622,7 +1622,7 @@ void block(__int64 fsys)
 				if (sym == semicolon)
 					getsym();
 				else
-					error(9);
+					error(76);
 			} while (sym == ident);
 		}
 		if (sym == varsym)
@@ -1640,7 +1640,7 @@ void block(__int64 fsys)
 				}
 				else
 				{
-					error(15);
+					error(76);
 				}
 			} while (sym == ident);
 		}
@@ -1657,7 +1657,7 @@ void block(__int64 fsys)
 				}
 				else
 				{
-					error(16);
+					error(77);
 				}
 				if (sym == semicolon)
 				{
@@ -1677,7 +1677,7 @@ void block(__int64 fsys)
 						}
 						else
 						{
-							error(17);
+							error(78);
 						}
 						if (sym == intersym || sym == realsym || sym == Boolsym)
 						{
@@ -1686,7 +1686,7 @@ void block(__int64 fsys)
 						}
 						else
 						{
-							error(18);
+							error(79);
 						}
 						if (sym == semicolon || sym == rparen)
 						{
@@ -1694,7 +1694,7 @@ void block(__int64 fsys)
 						}
 						else
 						{
-							error(19);
+							error(80);
 						}
 					}
 					if (sym == semicolon)
@@ -1704,7 +1704,7 @@ void block(__int64 fsys)
 				}
 				else
 				{
-					error(20);
+					error(81);
 				}
 				//getsym();
 			}
@@ -2198,9 +2198,49 @@ void init()
 	strcpy(wrongmsg[42],"term error:wrong member type for div");
 	strcpy(wrongmsg[43],"term error:wrong member type for mod");
 	strcpy(wrongmsg[44],"term error:wrong member type for and");
-	strcpy(wrongmsg[45],"term error:wrong member type for plus");
-	strcpy(wrongmsg[46],"term error:wrong member type for minus");
-	strcpy(wrongmsg[47],"term error:wrong member type for div");
+	strcpy(wrongmsg[45],"simple expression error:wrong member type for plus");
+	strcpy(wrongmsg[46],"simple expression error:wrong member type for minus");
+	strcpy(wrongmsg[47],"simple expression error:wrong member type for or");
+	strcpy(wrongmsg[48],"expression error:wrong member type for odd");
+	strcpy(wrongmsg[49],"expression error:wrong member type for operator");
+	strcpy(wrongmsg[50],"statement error(ident):array parameter expected an interger");
+	strcpy(wrongmsg[51],"statement error(ident):a left middle parenthesis expected");
+	strcpy(wrongmsg[52],"statement error(ident):wrong member for becomes");
+	strcpy(wrongmsg[53],"statement error(ident):a type can't be duplicated");
+	strcpy(wrongmsg[54],"statement error(call):an ident expected");
+	strcpy(wrongmsg[55],"statement error(call):procedure or function not exist");
+	strcpy(wrongmsg[56],"statement error(call):a right middle parenthesis expected");
+	strcpy(wrongmsg[57],"statement error(call):calling a illegal object");
+	strcpy(wrongmsg[58],"statement error(if):a Bool parameter expected");
+	strcpy(wrongmsg[59],"statement error(if):a then symbol expected to match if");
+	strcpy(wrongmsg[60],"statement error(begin):a semicolon is expected");
+	strcpy(wrongmsg[61],"statement error(begin):an end symbol is expected");
+	strcpy(wrongmsg[62],"statement error(while):a Bool parameter expected");
+	strcpy(wrongmsg[63],"statement error(while):a do symbol is expected");
+	strcpy(wrongmsg[64],"statement error(exit):an exit symbol must in a while");
+	strcpy(wrongmsg[65],"statement error(read):a left parenthesis expected");
+	strcpy(wrongmsg[66],"statement error(read):read an undeclared ident");
+	strcpy(wrongmsg[67],"statement error(read):read an illegal ident");
+	strcpy(wrongmsg[68],"statement error(read):read an illegal ident");
+	strcpy(wrongmsg[69],"statement error(read):a int symbol expected");
+	strcpy(wrongmsg[70],"statement error(read):a left middle parenthesis expected");
+	strcpy(wrongmsg[71],"statement error(read):wrong read in type");
+	strcpy(wrongmsg[72],"statement error(write):wro(ng write in type");
+	strcpy(wrongmsg[73],"statement error(write):a right parenthesis expected");
+	strcpy(wrongmsg[74],"statement error(write):a left parenthesis expected");
+	strcpy(wrongmsg[75],"block error:level overflow");
+	strcpy(wrongmsg[76],"block error:a semicolon expected");
+	strcpy(wrongmsg[77],"block error(procedure):an ident expected");
+	strcpy(wrongmsg[78],"block error(procedure):a colon expected");
+	strcpy(wrongmsg[79],"block error(procedure):wrong parameter type");
+	strcpy(wrongmsg[80],"block error(procedure):a semicolon or rparen expected");
+	strcpy(wrongmsg[81],"block error(procedure):wrong  symbol input");
+
+
+
+
+
+
 
 
 
