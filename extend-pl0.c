@@ -1,16 +1,15 @@
 // pl/0 compiler with code generation
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <ctype.h>
-//#include <fstream.h>
+#include<ctype.h>
+#include<math.h>
 #include "pl0.h"
 
 void error(long n)
 {
 	long i;
 
-	printf(" error");
+	printf(" ****");
 	for (i = 1; i <= cc - 1; i++)
 	{
 		printf(" ");
@@ -20,9 +19,9 @@ void error(long n)
 }
 
 void getch()
-{ //Êä³öÔ´³ÌĞò
+{ //è¾“å…¥æºç¨‹åºå’Œè¯»å…¥ä¸‹ä¸€ä¸ªå­—ç¬¦
 	if (cc == ll)
-	{
+	{ //å¦‚æœå½“å‰å­—ç¬¦æ˜¯æœ¬è¡Œæœ€åä¸€ä¸ª
 		if (feof(infile))
 		{
 			printf("************************************\n");
@@ -34,7 +33,7 @@ void getch()
 		cc = 0;
 		printf("%5d ", cx);
 		while ((!feof(infile)) && ((ch = getc(infile)) != '\n'))
-		{ //Êä³öÒ»ĞĞÔ­´úÂë
+		{
 			printf("%c", ch);
 			ll = ll + 1;
 			line[ll] = ch;
@@ -44,37 +43,38 @@ void getch()
 		line[ll] = ' ';
 	}
 	cc = cc + 1;
-	ch = line[cc];
+	ch = line[cc]; //ä»è¯»å¥½çš„ä¸€è¡Œé‡Œå–ä¸€ä¸ª
 }
 
 void getsym()
-{
+{ //è¯»å–ä¸€ä¸ªå­—ç¬¦
 	long i, j, k;
 	int flag = 0;
-	double t = 1.0;			//±ê¼ÇĞ¡ÊıµãºóµÄÎ»Êı
-	double numt = 0, z = 0; //Ğ¡Êı²¿·ÖµÄÖµ
+	double t = 1.0;			//æ ‡è®°å°æ•°ç‚¹åä½æ•°
+	double numt = 0, z = 0; //å°æ•°éƒ¨åˆ†å€¼
+
 	while (ch == ' ' || ch == '\t')
 	{
 		getch();
 	}
-	if (isalpha(ch))
-	{ // identified or reserved  ¿ªÊ¼½øĞĞ´Ê·¨·ÖÎö
+	if (isalpha(ch)) //å¼€å¤´è¦æ˜¯å­—æ¯
+	{				 // identified or reserved
 		k = 0;
 		do
 		{
 			if (k < al)
 			{
-				a[k] = ch;
+				a[k] = ch; //aä¸­ä¸ºæš‚å­˜çš„ç¬¦å·
 				k = k + 1;
 			}
 			getch();
-		} while (isalpha(ch) || isdigit(ch));
-		if (k >= kk)
+		} while (isalpha(ch) || isdigit(ch)); //è¯»å…¥ä¸€ç›´åˆ°ä¸‹ä¸€ä¸ªéå­—æ¯æˆ–è€…æ•°å­—ä¸ºæ­¢
+		if (k >= kk)						  //å­—ç¬¦é•¿åº¦è¶…å‡º
 		{
 			kk = k;
 		}
 		else
-		{
+		{ //å­—ç¬¦ä¸è¶³çš„éƒ¨åˆ†ç”¨ç©ºæ ¼è¡¥é½
 			do
 			{
 				kk = kk - 1;
@@ -83,8 +83,8 @@ void getsym()
 		}
 		strcpy(id, a);
 		i = 0;
-		j = norw - 1; //°Ñ·ûºÅ´®£¨Èçvar£©·ÅÈëidÖĞ
-		do
+		j = norw - 1;
+		do //äºŒåˆ†æ³•ä¾æ¬¡åœ¨ä¿ç•™å­—è¡¨é‡Œå¯»æ‰¾ç›¸ç­‰åœ°å€
 		{
 			k = (i + j) / 2;
 			if (strcmp(id, word[k]) <= 0)
@@ -95,20 +95,21 @@ void getsym()
 			{
 				i = k + 1;
 			}
-		} while (i <= j); //´ËÑ­»·ÓÃÓÚÔÚ±£Áô×Ö·û±íÖĞÕÒµ½¶ÔÓ¦µÄ±£Áô×Ö
+		} while (i <= j);
 		if (i - 1 > j)
-		{
-			sym = wsym[k]; //  sym·µ»Ø´Ê·¨µ¥ÔªµÄÀàĞÍ Èç¹ûi-1¡·jÊÇ±£Áô×Ö
+		{ //è‹¥ä¸ºä¿ç•™å­—
+			sym = wsym[k];
 		}
 		else
-		{
-			sym = ident; //·ñÔòÊÇ¶¨ÒåµÄ±êÊ¶·û
+		{ //ä¸ºå˜é‡
+			sym = ident;
 		}
 	}
 	else if (isdigit(ch))
 	{ // number
 		k = 0;
-		num = 0;
+		num = 0; //kè®°å½•æ•°å­—é•¿åº¦ï¼Œnumè®°å½•æ•°å€¼å¤§å°
+		//sym = number;
 		do
 		{
 			num = num * 10 + (ch - '0');
@@ -116,23 +117,25 @@ void getsym()
 			getch();
 		} while (isdigit(ch));
 		if (ch == '.')
-		{ //Óöµ½Ğ¡ÊıµãËµÃ÷ÊÇÊµĞÍÊı¾İ
+		{
 			getch();
 			if (isdigit(ch))
 			{
 				while (isdigit(ch))
 				{
 					t /= 10;
+					;
 					num = num + (ch - '0') * t;
 					k++;
 					getch();
 				}
-				sym = realsym;
+				sym = realsym; //å®æ•°ç±»å‹
 			}
 			else if (ch == '.')
-			{ //ÓÖÓöµ½Ò»¸öµãËµÃ÷ÊÇÊı×éµÄ¶¨Òå
+			{ //ç¬¬äºŒä¸ªç‚¹æ˜¯æ•°ç»„çš„å®šä¹‰
 				sym = intersym;
 				cc = cc - 2;
+				getch();
 			}
 			else
 			{
@@ -158,15 +161,15 @@ void getsym()
 		}
 		else
 		{
-			sym = nul;
+			sym = nul; //æ— æ³•è¯†åˆ«ï¼Œ:å¿…é¡»å’Œ=æ­é…
 		}
 	}
 	else if (ch == '/')
-	{ //ĞÂÔö
+	{ //æ³¨é‡Šéƒ¨åˆ†
 		getch();
 		if (ch == '*')
 		{
-			flag++;
+			flag++; //flag=1,ä¹‹åéƒ½ä¸ºæ³¨é‡Š
 			getch();
 			while (flag > 0)
 			{
@@ -175,14 +178,31 @@ void getsym()
 					getch();
 				}
 				getch();
-				if (ch == '/')
-					flag--;
+				if (ch = '/')
+				{
+					flag--; //æ‰¾åˆ°*/ï¼Œæ³¨é‡Šç»“æŸ
+				}
+			}
+			getch();
+			getsym(); //è¯»å–ä¸‹ä¸€ä¸ªå•è¯
+		}
+		else if (ch == '/')
+		{
+			flag++;
+			getch();
+			while (flag > 0)
+			{
+				while (cc != ll)
+				{
+					getch();
+				}
+				flag--;
 			}
 			getch();
 			getsym();
 		}
 		else
-		{
+		{ //å…¶å®æ˜¯ä¸ªé™¤æ³•ç¬¦å·
 			sym = ssym[(unsigned char)'/'];
 		}
 	}
@@ -206,13 +226,15 @@ void getsym()
 					}
 					getch();
 					if (ch == '/')
+					{
 						flag--;
+					}
 				}
 				getch();
 			}
 			else
 			{
-				printf("a superflous note symbol ");
+				printf("wrong symbol");
 				sym = nul;
 			}
 		}
@@ -266,7 +288,7 @@ void getsym()
 		getch();
 		if (ch == '.')
 		{
-			sym = dotdot;
+			sym = dotdot; //æ•°ç»„ä¸­çš„..
 			getch();
 		}
 		else
@@ -281,7 +303,7 @@ void getsym()
 	}
 }
 
-void gen(enum fct x, long y, double z)
+void gen(enum fct x, long y, long z)
 {
 	if (cx > cxmax)
 	{
@@ -294,7 +316,7 @@ void gen(enum fct x, long y, double z)
 	cx = cx + 1;
 }
 
-void test(__int64 s1, __int64 s2, long n)
+void test(unsigned long s1, unsigned long s2, long n)
 {
 	if (!(sym & s1))
 	{
@@ -321,7 +343,7 @@ void enter(enum object k)
 			num = 0;
 		}
 		table[tx].val = num;
-		table[tx].type1 = sym; //¼ÇÂ¼ÏÂ³£Á¿ÊÇÊµĞÍ»¹ÊÇÕûĞÍ
+		table[tx].type1 = sym;
 		break;
 	case variable:
 		table[tx].level = lev;
@@ -330,15 +352,15 @@ void enter(enum object k)
 		break;
 	case proc:
 		table[tx].level = lev;
-		dx = dx + 1;
+		dx = dx + 1; //procedureä¸ºä»€ä¹ˆè¦åŠ åç§»åœ°å€ï¼Ÿ
 		break;
 	case type:
-		table[tx].level = lev; /*table[tx].addr=dx; dx=dx+1;*/
 		table[tx].type1 = sym;
+		table[tx].level = lev;
 		break;
 	case func:
-		table[tx].level = lev;
 		table[tx].funcaddr = dx;
+		table[tx].level = lev;
 		dx = dx + 1;
 		break;
 	}
@@ -354,14 +376,14 @@ long position(char *id)
 	{
 		i = i - 1;
 	}
-	return i;
+	return i;//è‹¥è¿”å›0ï¼Œæ„å‘³ç€æœªæ‰¾åˆ°ç›¸åŒåç§°çš„å˜é‡ï¼Œå¦åˆ™æœ‰
 }
 
 void constdeclaration()
 {
 	if (sym == ident)
 	{
-		getsym(); //È¡µÃconst³£Á¿µÄÏÂÒ»¸ö´ÊµÄÀàĞÍ
+		getsym();
 		if (sym == eql || sym == becomes)
 		{
 			if (sym == becomes)
@@ -369,7 +391,7 @@ void constdeclaration()
 				error(1);
 			}
 			getsym();
-			if (sym == intersym || sym == realsym)
+			if (sym == intersym || sym == realsym) //constå…è®¸å®šä¹‰ä¸ºæ•´æ•°æˆ–å®æ•°
 			{
 				enter(constant);
 				getsym();
@@ -390,122 +412,12 @@ void constdeclaration()
 	}
 }
 
-void vardeclaration()
-{
-	long i;
-	int identnum = 0;		 //Í¬ÀàĞÍµÄ±äÁ¿¸öÊı
-	char sameid[10][al + 1]; //´æ·ÅÍ¬ÀàĞÍµÄ±äÁ¿µÄÃû×Ö
-	long size;
-	int j;
-	int k = 0;
-	int t;
-	if (sym == ident)
-	{
-		identnum++;
-		strcpy(sameid[k], id);
-		getsym();
-		while (sym == comma)
-		{
-			getsym();
-			if (sym == ident)
-			{
-				for (j = 0; j < identnum; j++)
-				{
-					if (strcmp(sameid[j], id) == 0)
-					{
-						error(10);
-						break;
-					}
-				}
-				identnum++;
-				k++;
-				strcpy(sameid[k], id);
-				getsym();
-			}
-		}
-		if (sym == nul)
-		{ //ËµÃ÷Óöµ½£ººóÃæÓ¦¸ÃÊÇÖ¸Ê¾±äÁ¿µÄÀàĞÍ
-			getsym();
-			if (sym == intersym || sym == realsym || sym == Boolsym)
-			{
-				for (j = 0, k = 0; j < identnum; j++)
-				{ //Ö®Ç°µÄ±äÁ¿È«²¿ÊÇÏàÍ¬µÄÀàĞÍ
-					strcpy(id, sameid[k]);
-					/*if((i=position(id))!=0){   //¼ì²é±äÁ¿ÊÇ·ñÖØ¸´ÉùÃ÷
-					  error(48);
-
-					}*/
-					enter(variable);
-					//tx1++;
-					table[tx].type1 = sym;
-
-					k++;
-				}
-			}
-			else if (sym == ident)
-			{
-				i = position(id); //ÔÚ·ûºÅ±íÖĞÕÒµ½IdµÄÎ»ÖÃ ·µ¸øÏÂ±í¸¶¸øi
-				if (i == 0)
-				{
-					error(11);
-				}
-				sym = table[i].type1;
-				if (sym == intersym || sym == realsym || sym == Boolsym)
-				{
-					for (j = 0, k = 0; j < identnum; j++)
-					{ //Ö®Ç°µÄ±äÁ¿È«²¿ÊÇÏàÍ¬µÄÀàĞÍ
-						strcpy(id, sameid[k]);
-						enter(variable);
-						//tx1++;
-						k++;
-						table[tx].type1 = sym;
-					}
-				}
-				else if (sym == arraysym)
-				{
-					for (j = 0; j < identnum; j++)
-					{ //Ö®Ç°µÄ±äÁ¿È«²¿ÊÇÏàÍ¬µÄÀàĞÍ
-						strcpy(id, sameid[j]);
-						enter(variable);
-						table[tx].type1 = arraysym;
-						table[tx].drt = table[i].drt;
-						table[tx].size = table[i].size;
-						size = table[tx].size;
-						for (t = 1; t <= table[tx].drt; t++)
-						{
-							table[tx].low[t] = table[i].low[t];
-							table[tx].high[t] = table[i].high[t];
-						}
-						sym = table[i].type2;
-						table[tx].type2 = sym;
-						dx = dx + 2 * table[i].drt + 1; //´æ·ÅÉÏÏÂ½çµÄ¿Õ¼ä
-						dx += size;
-					}
-				}
-			}
-			else
-			{
-				error(12);
-			}
-			getsym();
-		}
-		else
-		{
-			error(13);
-		}
-	}
-	else
-	{
-		error(14);
-	}
-}
-
 void typeexpression()
 {
 	__int64 sym1;
-	long num3, num4, size; //¼ÇÂ¼Êı×éµÄÉÏÏÂ½çÒÔ¼°´óĞ¡
+	long num3, num4, size; //æ•°ç»„ä¸Šä¸‹ç•Œï¼Œå¤§å°
 	long tx1;
-	int drtnum = 1;
+	int drtnum = 1; //æ•°ç»„ç»´æ•°
 	int j;
 	if (sym == intersym || sym == realsym || sym == Boolsym)
 	{
@@ -514,80 +426,105 @@ void typeexpression()
 	}
 	else if (sym == arraysym)
 	{
-
-		sym1 = sym;
+		//sym1=sym;
 		getsym();
 		if (sym == lmparen)
 		{
 			getsym();
 			if (sym == intersym)
 			{
-				num3 = num;
-				//getsym();
-				getch();
+				num3 = num; //ç»™æ•°ç»„çš„å‰è¾¹ç•Œèµ‹å€¼
 				getsym();
 				if (sym == dotdot)
 				{
 					getsym();
-					sym = sym1;
-					num4 = num;
-					size = num4 - num3 + 1;
-					enter(type);
-					table[tx].low[drtnum] = num3;
-					table[tx].high[drtnum] = num4;
-					table[tx].drt++;
-					getsym(); //È¡µÃÓÒÖĞÀ¨ºÅ
-					getsym(); //È¡µÃof
-					if (sym == ofsym)
+					if (sym == intersym)
 					{
-						getsym();
-						//tx1=tx;
-						//typeexpression();
-						if (sym == intersym || sym == realsym || sym == Boolsym)
+						num4 = num;
+						if (num4 < num3)
 						{
-							table[tx].type2 = sym;
-							table[tx].drt = 1;
-							table[tx].size = size;
-							/* for(j=1;j<size;j++){//¿ª±ÙÊı×é¿Õ¼ä
-								   tx++;
-								   table[tx].type2=sym;
-								   table[tx].addr=dx;dx++;
-								}*/
+							error(35);
 						}
-						else
+						size = num4 - num3 + 1;
+						enter(type);
+						table[tx].low[drtnum] = num3; //æ•°ç»„ç¬¬ä¸€ç»´çš„ä¸Šä¸‹ç•Œ
+						table[tx].high[drtnum] = num4;
+						table[tx].drt++;
+						getsym();
+						if (sym != rmparen)
 						{
-							while (sym == arraysym)
-							{
-								//typeexpression();
-								table[tx].drt++;
-								drtnum++;
-								getsym();
-								if (sym == lmparen)
-								{
-									getsym();
-									table[tx].low[drtnum] = num;
-									getch();
-									getsym();
-									//getch();
-									getsym();
-									table[tx].high[drtnum] = num;
-									getsym();
-									getsym();
-									getsym();
-									size = size * (table[tx].high[drtnum] - table[tx].low[drtnum] + 1);
-								}
-								else
-								{
-									error(34);
-								}
-								table[tx].size = size;
-							}
+							error(34);
+						}
+						getsym();
+						if (sym == ofsym)
+						{
+							getsym();
 							if (sym == intersym || sym == realsym || sym == Boolsym)
 							{
 								table[tx].type2 = sym;
+								table[tx].drt = 1;
+								table[tx].size = size; //ä¸æ‡‚ä¸ºä»€ä¹ˆï¼Œåªå£°æ˜äº†æ•°ç»„å±æ€§ï¼Œæ²¡æœ‰ç»™ä»–å¼€è¾Ÿç©ºé—´
 							}
+							else
+							{
+								while (sym == arraysym)
+								{
+									table[tx].drt++;
+									drtnum++;
+									getsym();
+									if (sym == lmparen)
+									{
+										getsym();
+										if (sym != intersym)
+										{
+											error(34);
+										}
+										table[tx].low[drtnum] = num;
+										getsym();
+										if (sym != dotdot)
+										{
+											error(34);
+										}
+										getsym();
+										if (sym != intersym)
+										{
+											error(34);
+										}
+										if (num < table[tx].low[drtnum])
+										{
+											error(35);
+										}
+										table[tx].high[drtnum] = num;
+										getsym();
+										if (sym != rmparen)
+										{
+											error(34);
+										}
+										getsym();
+										if (sym != ofsym)
+										{
+											error(34);
+										}
+										getsym();
+										size = size * (table[tx].high[drtnum] - table[tx].low[drtnum] + 1);
+									}
+									else
+									{
+										error(34);
+									}
+									table[tx].size = size;
+								}
+								if (sym == intersym || sym == realsym || sym == Boolsym)
+								{
+									table[tx].type2 = sym;
+								}
+							}
+							//getsym();åƒåœ¾ä»£ç ï¼ï¼
 						}
-						getsym();
+						else
+						{
+							error(34);
+						}
 					}
 					else
 					{
@@ -610,7 +547,9 @@ void typeexpression()
 		}
 	}
 	else
+	{
 		error(33);
+	}
 }
 
 void typedeclaration()
@@ -624,32 +563,107 @@ void typedeclaration()
 		{
 			if (sym == becomes)
 			{
-				error(6);
+				error(1);
 			}
 			getsym();
 			strcpy(id, id1);
-			typeexpression(); //´«µİ±êÊ¶·ûµÄÃû×Ö
+			typeexpression();
 		}
 		else
 		{
-			error(7);
+			error(3);
 		}
 	}
 	else
 	{
-		error(8);
+		error(4);
 	}
 }
 
-void listcode(long cx0)
-{ // list code generated for this block
-	long i;
-	for (i = cx0; i <= cx - 1; i++)
+void vardeclaration()
+{
+	long i;//ç”¨äºå­˜å‚¨åœ¨ç¬¦å·è¡¨ä¸­æœç´¢å¾—åˆ°çš„index
+	int identnum=0;//åŒç±»å‹çš„å˜é‡ä¸ªæ•°
+	char sameid[10][al+1];//å­˜æ”¾å˜é‡å
+	long size;
+	if (sym == ident)
 	{
-		printf("%10d%5s%3d%10.5f\n", i, mnemonic[code[i].f], code[i].l, code[i].a);
+		strcpy(sameid[identnum],id);
+		identnum++;
+		getsym();
+		while(sym==comma){
+			getsym();
+			if(sym==ident){
+				for(int j=0;j<identnum;j++){
+					if(strcmp(sameid[j],id)==0){
+						error(48);
+						break;
+					}
+				}
+				strcpy(sameid[identnum],id);
+				identnum++;
+				getsym();
+			}
+		}
+		if(sym==nul){//é‡åˆ°äº†:,å¯¹å£°æ˜çš„å˜é‡è¿›è¡Œç±»å‹å®šä¹‰
+			getsym();
+			if(sym==intersym||sym==realsym||sym==Boolsym){
+				for(int j=0;j<identnum;j++){
+					strcpy(id,sameid[j]);
+					i=position(id);
+					if(i!=0){//æ„å‘³ç€å·²å­˜åœ¨è¯¥å˜é‡
+						error(48);
+					}
+					enter(variable);
+					table[tx].type1=sym;
+				}
+			}
+			else if(sym==ident){
+				i=position(id);
+				if(i==0){
+					error(11);//ä¸å­˜åœ¨ç”¨äºå®šä¹‰ç±»å‹çš„ç±»å‹å˜é‡
+				}
+				sym=table[i].type1;
+				if(sym==intersym||sym==realsym||sym==Boolsym){
+					for(int j=0;j<identnum;j++){
+						strcpy(id,sameid[j]);
+						enter(variable);
+						table[tx].type1=sym;
+					}
+				}
+				else if(sym==arraysym){
+					for(int j=0;j<identnum;j++){
+						strcpy(id,sameid[j]);
+						enter(variable);
+						table[tx].type1=arraysym;
+						table[tx].size=table[i].size;
+						size=table[tx].size;
+						table[tx].drt=table[i].drt;
+						for(int t=1;t<=table[tx].drt;t++){
+							table[tx].low[t]=table[i].low[t];
+							table[tx].high[t]=table[i].high[t];
+						}
+						sym=table[i].type2;
+						table[tx].type2=sym;
+						dx=dx+2*table[i].drt+1;//æ¯ä¸€ç»´éƒ½éœ€è¦2+1ä¸ªç©ºé—´çš„æ§åˆ¶ä¿¡æ¯
+						dx+=size;
+					}
+				}
+			}
+			else{
+				error(36);
+			}
+		}
+		else{
+			error(55);
+		}
+	}
+	else
+	{
+		error(4);
 	}
 }
-void expre(__int64);
+
 void arraydo(enum fct x, int i)
 {
 	long d, t;
@@ -659,7 +673,7 @@ void arraydo(enum fct x, int i)
 		gen(lit, 0, table[i].drt);
 		gen(sto, lev - table[i].level, table[i].addr + 1);
 		for (t = 1, d = 1; t <= table[i].drt; t++)
-		{ //²úÉúÖ¸Áî½«ÉÏÏÂ½ç´æÈë,»¹ÓĞ´æÊı×éµÄÎ¬Êı
+		{ //äº§ç”ŸæŒ‡ä»¤å°†ä¸Šä¸‹ç•Œå­˜å…¥,è¿˜æœ‰å­˜æ•°ç»„çš„ç»´æ•°
 			d++;
 			gen(lit, 0, table[i].low[t]);
 			gen(sto, lev - table[i].level, table[i].addr + d);
@@ -673,7 +687,7 @@ void arraydo(enum fct x, int i)
 		gen(lit, 0, table[i].drt);
 		gen(sto, lev - table[i].level, table[i].addr + 1);
 		for (t = 1, d = 1; t <= table[i].drt; t++)
-		{ //²úÉúÖ¸Áî½«ÉÏÏÂ½ç´æÈë,»¹ÓĞ´æÊı×éµÄÎ¬Êı
+		{ //äº§ç”ŸæŒ‡ä»¤å°†ä¸Šä¸‹ç•Œå­˜å…¥,è¿˜æœ‰å­˜æ•°ç»„çš„ç»´æ•°
 			d++;
 			gen(lit, 0, table[i].low[t]);
 			gen(sto, lev - table[i].level, table[i].addr + d);
@@ -686,13 +700,25 @@ void arraydo(enum fct x, int i)
 	}
 }
 
+void listcode(long cx0)
+{ // list code generated for this block
+	long i;
+
+	for (i = cx0; i <= cx - 1; i++)
+	{
+		printf("%10d%5s%3d%5d\n", i, mnemonic[code[i].f], code[i].l, code[i].a);
+	}
+}
+
+void expre(__int64);
+
 void factor(__int64 fsys)
 {
 	long i;
 	long drtnum, away;
 	long k;
 	long j;
-	test(facbegsys, fsys, 30);
+	test(facbegsys, fsys, 24);
 	while (sym & facbegsys)
 	{
 		if (sym == ident)
@@ -700,7 +726,7 @@ void factor(__int64 fsys)
 			i = position(id);
 			if (i == 0)
 			{
-				error(31);
+				error(11);
 			}
 			else
 			{
@@ -722,7 +748,7 @@ void factor(__int64 fsys)
 					else
 					{
 						if (table[i].type1 == arraysym)
-						{ //Êı×éÀàĞÍ
+						{ //æ•°ç»„ç±»å‹
 							away = 0;
 							getsym();
 							for (j = 0; j < table[i].drt; j++)
@@ -734,16 +760,16 @@ void factor(__int64 fsys)
 									if (lastsym != intersym)
 									{
 										lastsym = typeerror;
-										error(32);
+										error(49);
 									}
 									if (sym == rmparen)
 										getsym();
 									else
-										error(33);
+										error(40);
 								}
 								else
 								{
-									error(34);
+									error(46);
 								}
 							}
 							if (lastsym != typeerror)
@@ -755,7 +781,7 @@ void factor(__int64 fsys)
 					}
 					break;
 				case proc:
-					error(35);
+					error(21);
 					break;
 				case func:
 					getsym();
@@ -766,7 +792,7 @@ void factor(__int64 fsys)
 						expre(fsys | comma | rparen);
 						if (lastsym != table[i].paral[k])
 						{
-							error(36);
+							error(49);
 							lastsym = typeerror;
 						}
 						while (sym == comma)
@@ -776,7 +802,7 @@ void factor(__int64 fsys)
 							expre(fsys | comma | rparen);
 							if (lastsym != table[i].paral[k])
 							{
-								error(36);
+								error(49);
 								lastsym = typeerror;
 							}
 						}
@@ -787,7 +813,7 @@ void factor(__int64 fsys)
 						}
 						for (k = 0; k < table[i].n; k++)
 						{
-							gen(opr, 0, 7); //°ÑÊµ²Îµ¯³öÕ»
+							gen(opr, 0, 7); //æŠŠå®å‚å¼¹å‡ºæ ˆ
 						}
 						gen(lod, lev - table[i].level, table[i].funcaddr);
 						if (lastsym != typeerror)
@@ -796,12 +822,12 @@ void factor(__int64 fsys)
 						}
 					}
 					else if (sym == becomes)
-					{													   //ËµÃ÷ÊÇº¯ÊıÖĞµÄ·µ»ØÓï¾ä
-						gen(lod, lev - table[i].level, table[i].funcaddr); //½«º¯Êı·µ»ØÖµ·ÅÈëÕ»¶¥
+					{													   //è¯´æ˜æ˜¯å‡½æ•°ä¸­çš„è¿”å›è¯­å¥
+						gen(lod, lev - table[i].level, table[i].funcaddr); //å°†å‡½æ•°è¿”å›å€¼æ”¾å…¥æ ˆé¡¶
 						lastsym = table[i].type1;
 					}
 					else
-					{ //ÎŞ²Îº¯Êı
+					{ //æ— å‚å‡½æ•°
 						gen(cal, lev - table[i].level, table[i].addr);
 						gen(lod, lev - table[i].level, table[i].funcaddr);
 						lastsym = table[i].type1;
@@ -815,7 +841,7 @@ void factor(__int64 fsys)
 		{
 			if (num > amax)
 			{
-				error(37);
+				error(31);
 				num = 0;
 			}
 			gen(lit, 0, num);
@@ -850,10 +876,10 @@ void factor(__int64 fsys)
 			}
 			else
 			{
-				error(38);
+				error(22);
 			}
 		}
-		test(fsys, lparen, 39);
+		test(fsys, lparen, 23);
 	}
 }
 
@@ -895,7 +921,7 @@ void term(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(40);
+				error(50);
 			}
 			gen(opr, 0, 4);
 		}
@@ -920,7 +946,7 @@ void term(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(41);
+				error(50);
 			}
 			gen(opr, 0, 5);
 		}
@@ -945,7 +971,7 @@ void term(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(42);
+				error(50);
 			}
 			gen(opr, 0, 18);
 		}
@@ -958,7 +984,7 @@ void term(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(43);
+				error(50);
 			}
 			gen(opr, 0, 19);
 		}
@@ -971,9 +997,9 @@ void term(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(44);
+				error(50);
 			}
-			//and¶ÌÂ·¼ÆËã£ºÈç¹ûµÚÒ»¸öÖµÎª0£¬Ôò²»ĞèÒªÅĞ¶ÏºóÃæµÄ£¬Ö±½ÓÌø×ªµ½factorÖ´ĞĞÍêºóµÄÏÂÒ»ÌõÓï¾ä£¬ÖµÕ»¶¥ÖµÎª0£»
+			//andçŸ­è·¯è®¡ç®—ï¼šå¦‚æœç¬¬ä¸€ä¸ªå€¼ä¸º0ï¼Œåˆ™ä¸éœ€è¦åˆ¤æ–­åé¢çš„ï¼Œç›´æ¥è·³è½¬åˆ°factoræ‰§è¡Œå®Œåçš„ä¸‹ä¸€æ¡è¯­å¥ï¼Œå€¼æ ˆé¡¶å€¼ä¸º0ï¼›
 			gen(opr, 0, 20);
 			cx2 = cx;
 			gen(jmp, 0, 0);
@@ -1011,7 +1037,7 @@ void simpexp(__int64 fsys)
 		if (addop == or)
 		{
 			cx1 = cx;
-			gen(jpq, 0, 0); //orÖ¸ÁîÏà¹ØµÄÌø×ªµØÖ·
+			gen(jpq, 0, 0); //oræŒ‡ä»¤ç›¸å…³çš„è·³è½¬åœ°å€
 		}
 		term(fsys | plus | minus | or);
 		if (addop == plus)
@@ -1035,7 +1061,7 @@ void simpexp(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(45);
+				error(50);
 			}
 			gen(opr, 0, 2);
 		}
@@ -1060,7 +1086,7 @@ void simpexp(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(46);
+				error(50);
 			}
 			gen(opr, 0, 3);
 		}
@@ -1073,7 +1099,7 @@ void simpexp(__int64 fsys)
 			else
 			{
 				lastsym = typeerror;
-				error(47);
+				error(50);
 			}
 			gen(opr, 0, 21);
 			cx2 = cx;
@@ -1100,7 +1126,7 @@ void expre(__int64 fsys)
 		else
 		{
 			lastsym = typeerror;
-			error(30);
+			error(50);
 		}
 		gen(opr, 0, 6);
 	}
@@ -1153,12 +1179,93 @@ void expre(__int64 fsys)
 		case geq:
 			gen(opr, 0, 11);
 			break;
-		case gtr: //´óÓÚ
+		case gtr: //å¤§äº
 			gen(opr, 0, 12);
 			break;
 		case leq:
 			gen(opr, 0, 13);
 			break;
+		}
+	}
+}
+
+void expression(unsigned long fsys)
+{
+	unsigned long addop;
+
+	if (sym == plus || sym == minus)
+	{
+		addop = sym;
+		getsym();
+		term(fsys | plus | minus);
+		if (addop == minus)
+		{
+			gen(opr, 0, 1);
+		}
+	}
+	else
+	{
+		term(fsys | plus | minus);
+	}
+	while (sym == plus || sym == minus)
+	{
+		addop = sym;
+		getsym();
+		term(fsys | plus | minus);
+		if (addop == plus)
+		{
+			gen(opr, 0, 2);
+		}
+		else
+		{
+			gen(opr, 0, 3);
+		}
+	}
+}
+
+void condition(unsigned long fsys)
+{
+	unsigned long relop;
+
+	if (sym == oddsym)
+	{
+		getsym();
+		expression(fsys);
+		gen(opr, 0, 6);
+	}
+	else
+	{
+		expression(fsys | eql | neq | lss | gtr | leq | geq);
+		if (!(sym & (eql | neq | lss | gtr | leq | geq)))
+		{
+			error(20);
+		}
+		else
+		{
+			relop = sym;
+			getsym();
+			expression(fsys);
+			switch (relop)
+			{
+			case eql:
+				gen(opr, 0, 8);
+				break;
+			case neq:
+				gen(opr, 0, 9);
+				break;
+			case lss:
+				gen(opr, 0, 10);
+				break;
+			case geq:
+				gen(opr, 0, 11);
+				break;
+			case gtr:
+				gen(opr, 0, 12);
+				break;
+			case leq:
+				gen(opr, 0, 13);
+				break;
+			}
 		}
 	}
 }
@@ -1169,7 +1276,7 @@ void statement(__int64 fsys)
 	long i, cx1, cx2;
 	long num1[now];
 	int drtnum = 0;
-	long away = 0; //Êı×éÔªËØµÄÆ«ÒÆÁ¿
+	long away = 0; //æ•°ç»„å…ƒç´ çš„åç§»é‡
 	long ii;
 	if (sym == ident)
 	{
@@ -1185,7 +1292,7 @@ void statement(__int64 fsys)
 					expre(fsys | rmparen);
 					if (lastsym != intersym)
 					{
-						error(30);
+						error(46);
 					}
 					lasttype = lastsym;
 					if (sym == rmparen)
@@ -1280,7 +1387,7 @@ void statement(__int64 fsys)
 				if (table[i].kind == proc)
 				{
 					getsym();
-					if (sym == lparen) //ÓĞ²ÎÊı
+					if (sym == lparen) //æœ‰å‚æ•°
 					{
 						do
 						{
@@ -1305,13 +1412,13 @@ void statement(__int64 fsys)
 						// gen(opr,0,7);
 						for (k = 0; k < table[i].n; k++)
 						{
-							gen(opr, 0, 7); //°ÑÊµ²Îµ¯³öÕ»
+							gen(opr, 0, 7); //æŠŠå®å‚å¼¹å‡ºæ ˆ
 						}
 						if (sym == funcsym)
-							gen(lod, lev - table[i].level, table[i].addr); //°Ñ·µ»ØÖµÑ¹ÈëÕ»¶¥
+							gen(lod, lev - table[i].level, table[i].addr); //æŠŠè¿”å›å€¼å‹å…¥æ ˆé¡¶
 					}
 					else
-					{ //Ã»ÓĞ²ÎÊıµÄ¹ı³Ì
+					{ //æ²¡æœ‰å‚æ•°çš„è¿‡ç¨‹
 						gen(cal, lev - table[i].level, table[i].addr);
 					}
 				}
@@ -1420,7 +1527,7 @@ void statement(__int64 fsys)
 		gen(jmp, 0, cx1);
 		code[cx2].a = cx;
 		if (exitcx != 0)
-		{ //ĞŞ¸ÄexitÓï¾äµÄÌø×ªµØÖ·
+		{ //ä¿®æ”¹exitè¯­å¥çš„è·³è½¬åœ°å€
 			code[exitcx].a = cx;
 			exitcx = 0;
 		}
@@ -1459,7 +1566,7 @@ void statement(__int64 fsys)
 				if (i == 0)
 					error(36);
 				else if (table[i].kind == constant || table[i].kind == proc || table[i].type1 == Boolsym)
-				{ // ²»ÄÜÍù³£Á¿»ò¹ı³ÌÒÔ¼°²¼¶ûÀàĞÍ¶ÁÈëÊı¾İ
+				{ // ä¸èƒ½å¾€å¸¸é‡æˆ–è¿‡ç¨‹ä»¥åŠå¸ƒå°”ç±»å‹è¯»å…¥æ•°æ®
 					error(12);
 					i = 0;
 					getsym();
@@ -1468,7 +1575,7 @@ void statement(__int64 fsys)
 				else
 				{
 					if (table[i].type1 == intersym || table[i].type1 == realsym)
-					{ //ËµÃ÷Òª¶ÁµÄÖ»ÊÇÒ»¸ö¼òµ¥±äÁ¿
+					{ //è¯´æ˜è¦è¯»çš„åªæ˜¯ä¸€ä¸ªç®€å•å˜é‡
 						getsym();
 						gen(opr, 0, 14);
 						gen(sto, lev - table[i].level, table[i].addr);
@@ -1476,7 +1583,7 @@ void statement(__int64 fsys)
 					else
 					{
 						if (table[i].type1 == arraysym && (table[i].type2 & (intersym | realsym)))
-						{ //Êı×éÀàĞÍ
+						{ //æ•°ç»„ç±»å‹
 							//drtnum=0;
 							//away=0;
 							getsym();
@@ -1509,7 +1616,7 @@ void statement(__int64 fsys)
 					}
 				}
 			} while (sym == comma);
-			gen(opr, 0, 15); //È¡µÃ»»ĞĞ·û
+			gen(opr, 0, 15); //å–å¾—æ¢è¡Œç¬¦
 			if (sym == rparen)
 				getsym();
 		}
@@ -1529,8 +1636,8 @@ void statement(__int64 fsys)
 					error(53);
 				}
 				if (lastsym == intersym)
-				{					 //Êä³öÕûĞÍ
-					gen(opr, 0, 16); //Éú³ÉÊä³öÖ¸Áî£¬Êä³öÕ»¶¥µÄÖµ
+				{					 //è¾“å‡ºæ•´å‹
+					gen(opr, 0, 16); //ç”Ÿæˆè¾“å‡ºæŒ‡ä»¤ï¼Œè¾“å‡ºæ ˆé¡¶çš„å€¼
 				}
 				else if (lastsym == realsym)
 				{
@@ -1543,7 +1650,7 @@ void statement(__int64 fsys)
 			}
 			else
 				getsym();
-			gen(opr, 0, 17); //Êä³ö»»ĞĞ·û
+			gen(opr, 0, 17); //è¾“å‡ºæ¢è¡Œç¬¦
 		}
 		else
 			error(35);
@@ -1551,7 +1658,7 @@ void statement(__int64 fsys)
 	test(fsys, 0, 19);
 }
 
-void block(__int64 fsys)
+void block(unsigned long fsys)
 {
 	int j;
 	long i, k = 0;
@@ -1566,26 +1673,19 @@ void block(__int64 fsys)
 	table[tx].addr = cx;
 	gen(jmp, 0, 0);
 	table[tx].n = prodn;
-	for (j = 0; j < prodn; j++) //²ÎÊı
-	{
+	for (j = 0; j < prodn; j++)
+	{ //è¯»å…¥å‚æ•°çš„åˆå§‹åŒ–
 		tx++;
 		strcpy(table[tx].name, pnow[j].id);
 		table[tx].kind = variable;
 		table[tx].level = lev;
-		//table[tx].size=1;
-		//table[tx].drt=0;
+		table[tx].size = 1;
+		table[tx].drt = 0;
 		table[tx].addr = dx;
 		table[tx].type1 = pnow[j].sym;
 		dx++;
 	}
-	tx2 = tx; //ºóÀ´¼ÓµÄ
-			  /*	for(j=0;j<prodn;j++){
-	gen(sto,lev-table[tx].level,table[tx].addr-j);
-//	tx0--;
-	} */
-			  /*for(j=0;j<prodn;j++){    //Õ»¶¥Ö¸ÕëÉÏÒÆ
-	gen(opr,0,23);
-	}*/
+	tx2 = tx; //unknown
 	if (lev > levmax)
 	{
 		error(32);
@@ -1597,13 +1697,13 @@ void block(__int64 fsys)
 			getsym();
 			do
 			{
-				constdeclaration(); //Èç¹ûÊÇconst³£Á¿ Ôòµ÷ÓÃÕâ¸ö
-				while (sym == comma)
+				constdeclaration();	 //ident=number
+				while (sym == comma) //å£°æ˜ç¬¬äºŒä¸ªå˜é‡
 				{
 					getsym();
 					constdeclaration();
 				}
-				if (sym == semicolon)
+				if (sym == semicolon) //constè¯­å¥ç»“æŸ
 				{
 					getsym();
 				}
@@ -1614,15 +1714,20 @@ void block(__int64 fsys)
 			} while (sym == ident);
 		}
 		if (sym == typesym)
-		{
+		{ //ç±»å‹å£°æ˜ï¼Œå ä½
 			getsym();
 			do
 			{
 				typedeclaration();
+				getsym();
 				if (sym == semicolon)
+				{
 					getsym();
+				}
 				else
-					error(9);
+				{
+					error(33);
+				}
 			} while (sym == ident);
 		}
 		if (sym == varsym)
@@ -1631,192 +1736,151 @@ void block(__int64 fsys)
 			do
 			{
 				vardeclaration();
-				/*hile(sym==comma){
-		    getsym(); vardeclaration();
-		}*/
+				getsym();
 				if (sym == semicolon)
 				{
 					getsym();
 				}
 				else
 				{
-					error(15);
+					error(5);
 				}
 			} while (sym == ident);
 		}
-		while (sym == procsym || sym == funcsym)
+		while (sym == procsym||funcsym)
 		{
-			prodn = 0;
-			if (sym == procsym)
-			{
+			prodn=0;
+			if(sym==procsym){
 				getsym();
-				if (sym == ident)
-				{
+				if(sym==ident){
 					enter(proc);
 					getsym();
 				}
-				else
-				{
-					error(16);
+				else{
+					error(4);
 				}
-				if (sym == semicolon)
-				{
+				if(sym==semicolon){
 					getsym();
 				}
-				else if (sym == lparen)
-				{ //ÓĞ×óÀ¨ºÅ£¬ËµÃ÷ÊÇÓĞ²ÎÊıµÄ¹ı³Ì
+				else if(sym==lparen){
 					getsym();
-					while (sym == ident)
-					{
-						strcpy(pnow[prodn].id, id); //¼ÇÂ¼²ÎÊıÃû
+					while(sym==ident){
+						strcpy(pnow[prodn].id,id);
 						prodn++;
-						if (ch == ':')
-						{
+						if(ch==':'){
 							getch();
 							getsym();
 						}
-						else
-						{
-							error(17);
+						else{
+							error(38);
 						}
-						if (sym == intersym || sym == realsym || sym == Boolsym)
-						{
-							pnow[prodn - 1].sym = sym;
+						if(sym==intersym||sym==realsym||sym==Boolsym){
+							pnow[prodn-1].sym=sym;
 							getsym();
 						}
-						else
-						{
-							error(18);
+						else{
+							error(39);
 						}
-						if (sym == semicolon || sym == rparen)
-						{
+						if(sym==semicolon||sym==rparen){
 							getsym();
 						}
-						else
-						{
-							error(19);
+						else{
+							error(5);
 						}
 					}
-					if (sym == semicolon)
-					{
+					if(sym==semicolon){
 						getsym();
 					}
 				}
-				else
-				{
-					error(20);
+				else{
+					error(5);
 				}
-				//getsym();
 			}
-			else if (sym == funcsym)
-			{ //´¦Àíº¯Êı
-				k = 0;
+			else if(sym==funcsym){
+				k=0;
 				getsym();
-				if (sym == ident)
-				{
+				if(sym==ident){
 					enter(func);
 					getsym();
-					i = position(id);
+					i=position(id);
 				}
-				else
-				{
-					error(21);
+				else{
+					error(4);
 				}
-				if (sym == lparen)
-				{ //ÓĞ×óÀ¨ºÅ£¬ËµÃ÷ÊÇÓĞ²ÎÊıµÄº¯Êı
+				if(sym==lparen){
 					getsym();
-					while (sym == ident)
-					{
-						strcpy(pnow[prodn].id, id); //¼ÇÂ¼²ÎÊıÃû
+					while(sym==ident){ 
+						strcpy(pnow[prodn].id,id);
 						prodn++;
-						if (ch == ':')
-						{
+						if(ch==':'){
 							getch();
 							getsym();
 						}
-						else
-						{
-							error(22);
+						else{
+							error(38);
 						}
-						if (sym == intersym || sym == realsym||sym==Boolsym)
-						{
-							table[i].paral[k] = sym;
+						if(sym==intersym||sym==realsym||sym==Boolsym){
+							table[i].paral[k]=sym;
 							k++;
-							pnow[prodn - 1].sym = sym;
+							pnow[prodn-1].sym=sym;
+							getsym();
+
+						}
+						else{
+							error(39);
+						}
+						if(sym==semicolon||sym==rparen){
 							getsym();
 						}
-						else
-						{
-							error(23);
-						}
-						if (sym == semicolon || sym == rparen)
-						{
-							getsym();
-						}
-						else
-						{
-							error(24);
+						else{
+							error(5);
 						}
 					}
 				}
-				if (sym == nul)
-				{
+				if(sym==nul){//æ¥æ”¶åˆ°äº†:
 					getsym();
-					if (sym == intersym || sym == realsym || sym == Boolsym)
-					{ //ÉùÃ÷·µ»ØÖµµÄÀàĞÍ
-						table[i].type1 = sym;
-						getsym();
+					if(sym==intersym||sym==realsym||sym==Boolsym){//å‡½æ•°è¿”å›å€¼ç±»å‹
+						table[i].type1=sym;
+						getsym;
+					}else{
+						error(45);
 					}
-					else
-					{
-						error(25);
-					}
+				}else{
+					error(44);
 				}
-				else
-				{
-					error(26);
-				}
-				if (sym == semicolon)
+				if(sym==semicolon){
 					getsym();
-				else
-				{
-					error(27);
+				}else{
+					error(5);
 				}
 			}
-			lev = lev + 1;
-			tx1 = tx;
-			dx1 = dx;
-			block(fsys | semicolon); //µÚ2²ãÇ¶Ì×µÄ×Ó³ÌĞò
-			lev = lev - 1;
-			tx = tx1;
-			dx = dx1;
-			if (sym == semicolon)
-			{
+			lev=lev+1;
+			tx1=tx;
+			dx1=dx;
+			block(fsys|semicolon);//é€’å½’ä¸‹é™
+			lev=lev-1;
+			tx=tx1;
+			dx=dx1;
+			if(sym==semicolon){
 				getsym();
-				test(statbegsys | ident | procsym | funcsym, fsys, 28);
+				test(statbegsys|ident|procsym|funcsym,fsys,6);
 			}
-			else
-			{
+			else{
 				error(5);
 			}
 		}
-		test(statbegsys | ident, declbegsys, 29);
+		test(statbegsys | ident, declbegsys, 7);
 	} while (sym & declbegsys);
-	code[table[tx0].addr].a = cx; //½«Ìø×ªµØÖ·¸ÄÎªÕıÈ·µÄCXÒÔ±£Ö¤µ÷ÓÃ·µ»ØµÄÕıÈ·ĞÔ
-	table[tx0].addr = cx;		  // start addr of code
+	code[table[tx0].addr].a = cx;//åˆ‡æ¢å›ä¸Šå±‚è°ƒç”¨ç‚¹åœ°å€
+	table[tx0].addr = cx; // start addr of code
 	cx0 = cx;
-	for (j = 0; j < table[tx0].n; j++)
-	{
-		gen(sto, lev - table[tx2].level, table[tx2].addr - j);
-		//	tx0--;
+	for(j=0;j<table[tx0].n;j++){
+		gen(sto,lev-table[tx2].level,table[tx2].addr-j);
 	}
-	gen(Int, 0, dx + table[tx0].n);
-	if (sym == beginsym)
-	{
+	gen(Int, 0, dx+table[tx0].n);
+	if(sym==beginsym){
 		statement(fsys | semicolon | endsym);
-	}
-	else
-	{
+	}else{
 		error(54);
 		getsym();
 	}
@@ -1826,13 +1890,14 @@ void block(__int64 fsys)
 }
 
 long base(long b, long l)
-{ //·µ»Ø·ÃÎÊÁ´µÄÏÂ±ê
+{
 	long b1;
+
 	b1 = b;
 	while (l > 0)
 	{ // find base l levels down
 		b1 = s[b1];
-		l = l - 1; //¸ù¾İ·ÃÎÊÁ´ÍùÉÏ»ØËİÕÒµ½±äÁ¿
+		l = l - 1;
 	}
 	return b1;
 }
@@ -1840,7 +1905,7 @@ long base(long b, long l)
 void interpret()
 {
 	//	FILE *infile=fopen("out.txt","rb");
-	long p, b, t;  // Ö¸Áî¼ÆÊıÆ÷-,Õ»»ùÖ·¼Ä´æÆ÷,Õ»¶¥Ö¸Õë
+	long p, b, t;  // æŒ‡ä»¤è®¡æ•°å™¨-,æ ˆåŸºå€å¯„å­˜å™¨,æ ˆé¡¶æŒ‡é’ˆ
 	instruction i; // instruction register
 				   //	instruction code[200];
 	int k = 0, kk;
@@ -1936,12 +2001,12 @@ void interpret()
 				t = t - 1;
 				s[t] = (s[t] <= s[t + 1]);
 				break;
-			case 14: //readÖ¸Áî,¶ÁÕûĞÎ3
+			case 14: //readæŒ‡ä»¤,è¯»æ•´å½¢3
 				j = 0;
 				getnum = 0;
 				a = 0;
 				t++;
-				//printf("ÊäÈëÒª¶ÁµÄÊı: ");
+				//printf("è¾“å…¥è¦è¯»çš„æ•°: ");
 				//	scanf("%c",&ch[j]);
 				ch = getchar();
 				while (ch != ' ' && ch != '.')
@@ -1952,7 +2017,7 @@ void interpret()
 					ch = getchar();
 				}
 				if (ch == '.')
-				{ //ËµÃ÷¶ÁÈëµÄÊıÊÇÊµĞÍ
+				{ //è¯´æ˜è¯»å…¥çš„æ•°æ˜¯å®å‹
 					tt = 1.0;
 					//	scanf("%c",&ch[j]);
 					ch = getchar();
@@ -1968,9 +2033,9 @@ void interpret()
 				s[t] = getnum;
 				break;
 			case 15:
-				ch = getchar(); //¶ÁÈ¡»»ĞĞ·û
+				ch = getchar(); //è¯»å–æ¢è¡Œç¬¦
 				break;
-			case 16: //writeÖ¸Áî
+			case 16: //writeæŒ‡ä»¤
 				printf("%5d", (long)s[t]);
 				t--;
 				break;
@@ -2030,7 +2095,7 @@ void interpret()
 					break;
 				}
 				if (s[base(b, i.l) + (long)i.a + 1] == 1 || k == 0)
-				{ //µÚÒ»Î¬Çé¿ö
+				{ //ç¬¬ä¸€ç»´æƒ…å†µ
 					away = ls - s[base(b, i.l) + (long)i.a + 1 + 1];
 				}
 				else
@@ -2081,12 +2146,12 @@ void interpret()
 			adr = adr + away;
 			//  t--;
 			s[base(b, i.l) + (long)i.a + 1 + 2 * (long)s[base(b, i.l) + (long)i.a + 1] + 1 + adr] = s[t];
-			t = t - 1 - s[base(b, i.l) + (long)i.a + 1]; //°ÑÒª¸³µÄÖµÒÔ¼°ÏÂ±ê³öÕ»
+			t = t - 1 - s[base(b, i.l) + (long)i.a + 1]; //æŠŠè¦èµ‹çš„å€¼ä»¥åŠä¸‹æ ‡å‡ºæ ˆ
 			break;
 		case cal:					 // generate new block mark
-			s[t + 1] = base(b, i.l); //½«¸¸¹ı³Ì»ùµØÖ·ÈëÕ»  ,·ÃÎÊÁ´
-			s[t + 2] = b;			 //±¾¹ı³Ì»ùµØÖ·   ¿ØÖÆÁ´
-			s[t + 3] = p;			 //·µ»ØµØÖ·
+			s[t + 1] = base(b, i.l); //å°†çˆ¶è¿‡ç¨‹åŸºåœ°å€å…¥æ ˆ  ,è®¿é—®é“¾
+			s[t + 2] = b;			 //æœ¬è¿‡ç¨‹åŸºåœ°å€   æ§åˆ¶é“¾
+			s[t + 3] = p;			 //è¿”å›åœ°å€
 			b = t + 1;
 			p = i.a;
 			break;
@@ -2122,7 +2187,9 @@ void init()
 		ssym[i] = nul;
 	}
 	for (i = 0; i < norw; i++)
+	{
 		wsym[i] = nul;
+	}
 	strcpy(word[0], "Boolean   ");
 	strcpy(word[1], "and       ");
 	strcpy(word[2], "array     ");
@@ -2152,76 +2219,10 @@ void init()
 	strcpy(word[26], "var       ");
 	strcpy(word[27], "while     ");
 	strcpy(word[28], "write     ");
-
-	strcpy(wrongmsg[0], "placeholder");
-	strcpy(wrongmsg[1], "const declare error:expected equal not becomes");
-	strcpy(wrongmsg[2], "const declare error:ident type wrong ");
-	strcpy(wrongmsg[3], "const declare error:operator wrong");
-	strcpy(wrongmsg[4], "const declare error:expected ident");
-	strcpy(wrongmsg[5], "const declare error:expected semicolon");
-	strcpy(wrongmsg[6], "type declare error:expected equal not becomes");
-	strcpy(wrongmsg[7], "type declare error:operator wrong");
-	strcpy(wrongmsg[8], "type declare error:expected ident");
-	strcpy(wrongmsg[9], "type declare error:expected semicolon");
-	strcpy(wrongmsg[10],"var declare error:variable name duplication");
-	strcpy(wrongmsg[11],"var declare error:type ident doesn't exist");
-	strcpy(wrongmsg[12],"var declare error:expected type definition");
-	strcpy(wrongmsg[13],"var declare error:expected colon");
-	strcpy(wrongmsg[14],"var declare error:expected ident");
-	strcpy(wrongmsg[15],"var declare error:expected semicolon");
-	strcpy(wrongmsg[16],"procedure declare error:expected ident");
-	strcpy(wrongmsg[17],"procedure declare error:(parameter error)expected colon");
-	strcpy(wrongmsg[18],"procedure declare error:(parameter error)expected type");
-	strcpy(wrongmsg[19],"procedure declare error:(parameter error)expected semicolon or right parenthesis");
-	strcpy(wrongmsg[20],"procedure declare error:expected semicolon or parenthesis");
-	strcpy(wrongmsg[21],"function declare error:expected ident");
-	strcpy(wrongmsg[22],"function declare error:(parameter error)expecteed colon");
-	strcpy(wrongmsg[23],"function declare error:(parameter error)expecteed type");
-	strcpy(wrongmsg[24],"function declare error:(parameter error)expecteed end symbol");
-	strcpy(wrongmsg[25],"function declare error:wrong function return type");
-	strcpy(wrongmsg[26],"function declare error:expecteed colon before return type");
-	strcpy(wrongmsg[27],"function declare error:expecteed end symbol");
-	strcpy(wrongmsg[28],"proc and func struct error:wrong symbol after definition");
-	strcpy(wrongmsg[29],"global struct error:wrong symbol after definition");
-	strcpy(wrongmsg[30],"factor error:wrong begin symbol");
-	strcpy(wrongmsg[31],"factor error:reference ident not exist");
-	strcpy(wrongmsg[32],"factor error:wrong parameter type for an array");
-	strcpy(wrongmsg[33],"factor error:expected a right middle parenthesis using array");
-	strcpy(wrongmsg[34],"factor error:expected a parenthesis using an array");
-	strcpy(wrongmsg[35],"factor error:a procedure can't be a factor");
-	strcpy(wrongmsg[36],"factor error:function parameter type error");
-	strcpy(wrongmsg[37],"factor error:number overflow");
-	strcpy(wrongmsg[38],"factor error:expected a right parenthesis to match the left");
-	strcpy(wrongmsg[39],"factor error:not a expected symbol after a factor");
-	strcpy(wrongmsg[40],"term error:wrong member type for times");
-	strcpy(wrongmsg[41],"term error:wrong member type for slash");
-	strcpy(wrongmsg[42],"term error:wrong member type for div");
-	strcpy(wrongmsg[43],"term error:wrong member type for mod");
-	strcpy(wrongmsg[44],"term error:wrong member type for and");
-	strcpy(wrongmsg[45],"term error:wrong member type for plus");
-	strcpy(wrongmsg[46],"term error:wrong member type for minus");
-	strcpy(wrongmsg[47],"term error:wrong member type for div");
-
-
-
-
-
-	strcpy(mnemonic[lit], "lit");
-	strcpy(mnemonic[opr], "opr");
-	strcpy(mnemonic[lod], "lod");
-	strcpy(mnemonic[sto], "sto");
-	strcpy(mnemonic[cal], "cal");
-	strcpy(mnemonic[Int], "int");
-	strcpy(mnemonic[jmp], "jmp");
-	strcpy(mnemonic[jpc], "jpc");
-	strcpy(mnemonic[say], "say"); //Êı×éµÄ´æÖ¸Áî
-	strcpy(mnemonic[lay], "lay"); //Êı×éµÄÈ¡Ö¸Áî
-	strcpy(mnemonic[jpq], "jpq");
 	wsym[0] = Boolsym;
 	wsym[1] = and;
 	wsym[2] = arraysym;
 	wsym[3] = beginsym;
-
 	wsym[4] = callsym;
 	wsym[5] = constsym;
 	wsym[6] = div;
@@ -2234,10 +2235,10 @@ void init()
 	wsym[13] = ifsym;
 	wsym[14] = intersym;
 	wsym[15] = mod;
-	wsym[16] = not ;
+	wsym[16] = not;
 	wsym[17] = oddsym;
 	wsym[18] = ofsym;
-	wsym[19] = or ;
+	wsym[19] = or;
 	wsym[20] = procsym;
 	wsym[21] = readsym;
 	wsym[22] = realsym;
@@ -2253,14 +2254,24 @@ void init()
 	ssym['/'] = slash;
 	ssym['('] = lparen;
 	ssym[')'] = rparen;
-	//ssym['=']=eql;
+	ssym['='] = eql;
 	ssym[','] = comma;
 	ssym['.'] = period;
 	ssym[';'] = semicolon;
 	ssym['['] = lmparen;
 	ssym[']'] = rmparen;
-
-	declbegsys = constsym | typesym | varsym | procsym | funcsym;
+	strcpy(mnemonic[lit], "lit");
+	strcpy(mnemonic[opr], "opr");
+	strcpy(mnemonic[lod], "lod");
+	strcpy(mnemonic[sto], "sto");
+	strcpy(mnemonic[cal], "cal");
+	strcpy(mnemonic[Int], "int");
+	strcpy(mnemonic[jmp], "jmp");
+	strcpy(mnemonic[jpc], "jpc");
+	strcpy(mnemonic[say], "say"); //æ•°ç»„çš„å­˜æŒ‡ä»¤
+	strcpy(mnemonic[lay], "lay"); //æ•°ç»„çš„å–æŒ‡ä»¤
+	strcpy(mnemonic[jpq], "jpq");
+	declbegsys = constsym | varsym | procsym | funcsym | typesym;
 	statbegsys = beginsym | callsym | ifsym | whilesym | exitsym | writesym | readsym;
 	facbegsys = ident | intersym | realsym | lparen | not | truesym | falsesym;
 }
@@ -2276,7 +2287,6 @@ int main()
 		printf("File %s can't be opened.\n", infilename);
 		exit(1);
 	}
-
 	err = 0;
 	cc = 0;
 	cx = 0;
@@ -2295,17 +2305,17 @@ int main()
 	{
 		if ((outfile = fopen("out.txt", "wb")) == NULL)
 		{
-			printf("File <out.txt> can't be opened.\n");
+			printf("File <out.txt> open failed.");
 			exit(1);
 		}
 		fwrite(&code, sizeof(instruction), cxmax, outfile);
 		fclose(outfile);
-		if ((outfile = fopen("code.txt", "w")) == NULL)
+		if ((outfile = fopen("code.txt", "wb")) == NULL)
 		{
-			printf("File <out.txt> can't be opened.\n");
+			printf("File <code.txt> open failed.");
 			exit(1);
 		}
-		for (int i = 0; i <= cx; i++)
+		for (long i = 0; i <= cx; i++)
 		{
 			fprintf(outfile, "%10d%5s%3d%10.5f\n", i, mnemonic[code[i].f], code[i].l, code[i].a);
 		}
@@ -2318,5 +2328,5 @@ int main()
 	}
 	fclose(infile);
 	system("pause");
-	return (0);
+	return 0;
 }

@@ -104,6 +104,7 @@ char line[81];/* 读取行缓冲区 */
 char a[al+1]; /* 临时符号, 多出的一个字节用于存放0 */
 instruction code[cxmax+1];/* 存放虚拟机代码的数组 */
 char word[norw][al+1];//保留字
+char wrongmsg[100][100];
 __int64 wsym[norw];//保留字对应的符号值
 __int64 ssym[256];//单字符的符号值
 
