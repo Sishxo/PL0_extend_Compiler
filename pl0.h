@@ -51,9 +51,9 @@
 #define writesym   0x4000000000
 #define readsym    0x8000000000
 #define exitsym    0x10000000000
-#define OR         0x20000000000
-#define AND        0x40000000000
-#define NOT        0x80000000000
+#define or         0x20000000000
+#define and        0x40000000000
+#define not        0x80000000000
 #define div        0x100000000000
 #define mod        0x200000000000
 #define truesym    0x400000000000

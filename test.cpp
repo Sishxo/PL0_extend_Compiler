@@ -19,7 +19,7 @@ void init()
 		wsym[i] = nul;
 	}
 	strcpy(word[0], "Boolean   ");
-	strcpy(word[1], "AND       ");
+	strcpy(word[1], "and       ");
 	strcpy(word[2], "array     ");
 	strcpy(word[3], "begin     ");
 	strcpy(word[4], "call      ");
@@ -34,10 +34,10 @@ void init()
 	strcpy(word[13], "if        ");
 	strcpy(word[14], "integer   ");
 	strcpy(word[15], "mod       ");
-	strcpy(word[16], "NOT       ");
+	strcpy(word[16], "not       ");
 	strcpy(word[17], "odd       ");
 	strcpy(word[18], "of        ");
-	strcpy(word[19], "OR        ");
+	strcpy(word[19], "or        ");
 	strcpy(word[20], "procedure ");
 	strcpy(word[21], "read      ");
 	strcpy(word[22], "real      ");
@@ -48,7 +48,7 @@ void init()
 	strcpy(word[27], "while     ");
 	strcpy(word[28], "write     ");
 	wsym[0] = Boolsym;
-	wsym[1] = AND;
+	wsym[1] = and;
 	wsym[2] = arraysym;
 	wsym[3] = beginsym;
 	wsym[4] = callsym;
@@ -63,10 +63,10 @@ void init()
 	wsym[13] = ifsym;
 	wsym[14] = intersym;
 	wsym[15] = mod;
-	wsym[16] = NOT;
+	wsym[16] = not;
 	wsym[17] = oddsym;
 	wsym[18] = ofsym;
-	wsym[19] = OR;
+	wsym[19] = or;
 	wsym[20] = procsym;
 	wsym[21] = readsym;
 	wsym[22] = realsym;
@@ -101,7 +101,7 @@ void init()
 	strcpy(mnemonic[jpq], "jpq");
 	declbegsys = constsym | varsym | procsym | funcsym | typesym;
 	statbegsys = beginsym | callsym | ifsym | whilesym | exitsym | writesym | readsym;
-	facbegsys = ident | intersym | realsym | lparen | NOT | truesym | falsesym;
+	facbegsys = ident | intersym | realsym | lparen | not | truesym | falsesym;
 }
 
 int main()
