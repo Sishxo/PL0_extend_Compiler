@@ -42,6 +42,6 @@ function gcd(f:integer; g:integer):integer;
 
 begin
     x:=m; y:=n; write(multiply(x,y));	/* 595 */
-    x:=25.0; y:=3; call divide(x,y);	/* 8,1 */
-    x:=34.9; y:=36; z:=gcd(x,y); write(z); /* 2 */
+    x:=25; y:=3; call divide(25,y);	/* 8,1 */
+    x:=34; y:=36; z:=gcd(x,y); write(z); /* 2 */
 end.

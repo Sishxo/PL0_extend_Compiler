@@ -1,7 +1,9 @@
+// pl/0 compiler with code generation
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+//#include <fstream.h>
 #include "pl0.h"
 #include<windows.h>//控制Dos界面
 HANDLE hout;//控制台句柄
@@ -33,11 +35,9 @@ void getch()
 	{
 		if (feof(infile))
 		{
-			color(14);
-			printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-			printf("      some essential part of program missing\n");
-			printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-			color(15);
+			printf("************************************\n");
+			printf("      program incomplete\n");
+			printf("************************************\n");
 			exit(1);
 		}
 		ll = 0;
@@ -190,6 +190,21 @@ void getsym()
 			}
 			getch();
 			getsym();
+		}
+		else if ( ch == '/')
+        {   //是'//'注释符号
+            flag++;    //标记是否为注释内容，若为1，则此时输入字符都为注释内容
+			getch();
+			while ( flag > 0)
+			{
+				while ( cc != ll)
+				{  //行注释，未读到行末尾，则滤过注释内容
+					getch();
+				}
+				flag--;
+			}
+			getch();//读入字符
+			getsym();//获取下一个词的种别类型
 		}
 		else
 		{
@@ -1222,7 +1237,7 @@ void statement(__int64 fsys)
 			lasttype = table[i].type1;
 			getsym();
 		}
-		if (sym == becomes)	
+		if (sym == becomes)
 		{
 			getsym();
 		}
@@ -1855,7 +1870,7 @@ void block(__int64 fsys)
 		if(sym==period){
 			printf("an illegal period\n");
 			//system("pause");
-		}	
+		}
 		error(89);
 		getsym();
 	}
@@ -1983,7 +1998,7 @@ void interpret()
 				//printf("输入要读的数: ");
 				//	scanf("%c",&ch[j]);
 				ch = getchar();
-				while (ch != ' ' && ch != '.')
+				while (ch != ' ' && ch != '.' && ch != '\n')
 				{
 					getnum = getnum * 10 + (ch - '0');
 					j++;
@@ -2344,16 +2359,12 @@ void init()
 	facbegsys = ident | intersym | realsym | lparen | not | truesym | falsesym;
 }
 
-int main(int argc,char** argv)
+int main()
 {
 	init();
-	//printf("please input source program file name: ");
-	//scanf("%s", infilename);
-	//printf("%s\n",argv[1]);
-	strcpy(infilename,argv[1]);
-	printf("%s",infilename);
-	//printf("test");
-	//getchar();
+	printf("please input source program file name: ");
+	scanf("%s", infilename);
+	getchar();
 	printf("\n");
 	if ((infile = fopen(infilename, "r")) == NULL)
 	{
@@ -2378,14 +2389,14 @@ int main(int argc,char** argv)
 	}
 	if (err == 0)
 	{
-		if ((outfile = fopen("pcode2byte.txt", "wb")) == NULL)
+		if ((outfile = fopen("out.txt", "wb")) == NULL)
 		{
 			printf("File <out.txt> can't be opened.\n");
 			exit(1);
 		}
 		fwrite(&code, sizeof(instruction), cxmax, outfile);
 		fclose(outfile);
-		if ((outfile = fopen("pcode.txt", "w")) == NULL)
+		if ((outfile = fopen("code.txt", "w")) == NULL)
 		{
 			printf("File <out.txt> can't be opened.\n");
 			exit(1);
@@ -2395,7 +2406,7 @@ int main(int argc,char** argv)
 			fprintf(outfile, "%10d%5s%3d%10.5f\n", i, mnemonic[code[i].f], code[i].l, code[i].a);
 		}
 		fclose(outfile);
-		//interpret();
+		interpret();
 	}
 	else
 	{
